@@ -20,7 +20,7 @@ public class ChessBoard {
 	}
 	
 	public void move(String fromPosition, String toPosition) throws IllegalMoveException {
-		
+		throw new UnsupportedOperationException();
 	}
 	
 
@@ -84,11 +84,11 @@ public class ChessBoard {
 	}
 
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IllegalMoveException {
 		ChessBoard board = new ChessBoard();
 		board.initialize();
 		System.out.println(board);
-		//board.move("c2", "c4");
+		board.move("c2", "c4");
 		System.out.println(board);
 	}
 }

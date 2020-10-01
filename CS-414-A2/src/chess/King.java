@@ -21,7 +21,25 @@ public class King extends ChessPiece {
 
 	@Override
 	public ArrayList<String> legalMoves() {
-		return new ArrayList<String>();
+		var possibleMoves = new ArrayList<String>();
+		possibleMoves.add(getPositionString(column - 1, row));
+		possibleMoves.add(getPositionString(column + 1, row - 1));
+		possibleMoves.add(getPositionString(column + 1, row));
+		possibleMoves.add(getPositionString(column + 1, row + 1));
+		possibleMoves.add(getPositionString(column, row + 1));
+		possibleMoves.add(getPositionString(column + 1, row - 1));
+		possibleMoves.add(getPositionString(column, row - 1));
+		possibleMoves.add(getPositionString(column - 1, row - 1));
+		
+		var legalMoves = new ArrayList<String>();
+		
+		for(var move : possibleMoves){
+			if(isLegalMove(move)) {
+				legalMoves.add(move);
+			}
+		}
+		
+		return legalMoves;
 	}
 
 }
