@@ -25,38 +25,20 @@ public class Rook extends ChessPiece {
 		boolean checkTop = true, checkRight = true, checkLeft = true, checkBottom = true;
 
 		for(var x = 1; x < 8; x++) {
-			var top = getPositionString(column, row + x);
-			var right = getPositionString(column + x, row);
-			var left = getPositionString(column - x, row);
-			var bottom = getPositionString(column, row - x);
 			
-			if(checkTop && isLegalMove(top)) {
-				legalMoves.add(top);
+			if(checkTop) {
+				checkTop = tryAddMove(column, row + x, legalMoves);
 			}
-			else {
-				checkTop = false;
+			if(checkRight) {
+				checkRight = tryAddMove(column + x, row, legalMoves);
 			}
-			
-			if(checkRight && isLegalMove(right)) {
-				legalMoves.add(right);
+			if(checkLeft) {
+				checkLeft = tryAddMove(column - x, row, legalMoves);
 			}
-			else {
-				checkRight = false;
+			if(checkBottom) {
+				checkBottom = tryAddMove(column, row - x, legalMoves);
 			}
 			
-			if(checkLeft && isLegalMove(left)) {
-				legalMoves.add(left);
-			}
-			else {
-				checkLeft = false;
-			}
-			
-			if(checkBottom && isLegalMove(bottom)) {
-				legalMoves.add(bottom);
-			}
-			else {
-				checkBottom = false;
-			}
 		}
 		return legalMoves;
 	}

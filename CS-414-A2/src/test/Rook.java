@@ -19,8 +19,8 @@ class Rook {
 		blackPiece = new chess.Rook(board, Color.BLACK);
 		whitePiece = new chess.Rook(board, Color.WHITE);
 		
-		blackPiece.setPosition("a1");
-		whitePiece.setPosition("a2");
+		board.placePiece(blackPiece, "a1");
+		board.placePiece(whitePiece, "b1");
 	}
 
 	@Test
@@ -31,8 +31,6 @@ class Rook {
 	
 	@Test
 	void setPosition() throws IllegalPositionException {
-		var blackBishop = new chess.Bishop(board, Color.BLACK);
-		blackBishop.setPosition("b1");
 		try {
 			blackPiece.setPosition("11");
 			fail("Did not catch illegal position");
@@ -44,19 +42,24 @@ class Rook {
 		}
 		catch(IllegalPositionException e) {}
 		try {
-			blackPiece.setPosition("b1");
+			blackPiece.setPosition("xx");
 			fail("Did not catch illegal position");
 		}
 		catch(IllegalPositionException e) {}
+		try {
+			blackPiece.setPosition("a9");
+		}
+		catch(IllegalPositionException e) {}
 		
-		assertEquals(blackPiece.getPosition(), "a1");
-		assertEquals(whitePiece.getPosition(), "a2");
+		blackPiece.setPosition("g1");
+		assertEquals(blackPiece.getPosition(), "g1");
+		assertEquals(whitePiece.getPosition(), "b1");
 	}
 	
 	@Test
 	void getPosition() {
 		assertEquals(blackPiece.getPosition(), "a1");
-		assertEquals(whitePiece.getPosition(), "a2");
+		assertEquals(whitePiece.getPosition(), "b1");
 	}
 	
 	@Test
@@ -68,26 +71,18 @@ class Rook {
 	@Test
 	void legalMoves() throws IllegalPositionException {
 		
-		blackPiece.setPosition("a1");
-		whitePiece.setPosition("b1");	
 		var blackMoves = blackPiece.legalMoves();
 		var whiteMoves = whitePiece.legalMoves();
 		
-		assertEquals(blackMoves.size(), 14);
-		assertTrue(whiteMoves.contains("a2"));
-		assertTrue(whiteMoves.contains("a3"));
-		assertTrue(whiteMoves.contains("a4"));
-		assertTrue(whiteMoves.contains("a5"));
-		assertTrue(whiteMoves.contains("a6"));
-		assertTrue(whiteMoves.contains("a7"));
-		assertTrue(whiteMoves.contains("a8"));
-		assertTrue(whiteMoves.contains("b1"));
-		assertTrue(whiteMoves.contains("c1"));
-		assertTrue(whiteMoves.contains("d1"));
-		assertTrue(whiteMoves.contains("e1"));
-		assertTrue(whiteMoves.contains("f1"));
-		assertTrue(whiteMoves.contains("g1"));
-		assertTrue(whiteMoves.contains("h1"));
+		assertEquals(blackMoves.size(), 8);
+		assertTrue(blackMoves.contains("a2"));
+		assertTrue(blackMoves.contains("a3"));
+		assertTrue(blackMoves.contains("a4"));
+		assertTrue(blackMoves.contains("a5"));
+		assertTrue(blackMoves.contains("a6"));
+		assertTrue(blackMoves.contains("a7"));
+		assertTrue(blackMoves.contains("a8"));
+		assertTrue(blackMoves.contains("b1"));
 
 		assertEquals(whiteMoves.size(), 14);
 		assertTrue(whiteMoves.contains("a1"));
@@ -108,37 +103,40 @@ class Rook {
 		var blackRook = new chess.Rook(board, Color.BLACK);
 		var blackRook1 = new chess.Rook(board, Color.BLACK);
 		var blackRook2 = new chess.Rook(board, Color.BLACK);
-		blackRook.setPosition("h1");
-		blackRook1.setPosition("h2");
-		blackRook2.setPosition("g1");
+		board.placePiece(blackRook,  "h1");
+		board.placePiece(blackRook1, "h2");
+		board.placePiece(blackRook2, "g1");
+		var blackRookMoves = blackRook.legalMoves();
+		var blackRook1Moves = blackRook1.legalMoves();
+		var blackRook2Moves = blackRook2.legalMoves();
 		
-		assertEquals(blackRook.legalMoves().size(), 0);
-		assertEquals(blackRook1.legalMoves().size(), 13);
-		assertTrue(whiteMoves.contains("h3"));
-		assertTrue(whiteMoves.contains("h4"));
-		assertTrue(whiteMoves.contains("h5"));
-		assertTrue(whiteMoves.contains("h6"));
-		assertTrue(whiteMoves.contains("h7"));
-		assertTrue(whiteMoves.contains("h8"));
-		assertTrue(whiteMoves.contains("a2"));
-		assertTrue(whiteMoves.contains("b2"));
-		assertTrue(whiteMoves.contains("c2"));
-		assertTrue(whiteMoves.contains("d2"));
-		assertTrue(whiteMoves.contains("e2"));
-		assertTrue(whiteMoves.contains("f2"));
-		assertTrue(whiteMoves.contains("g2"));
-		assertEquals(blackRook2.legalMoves().size(), 13);
-		assertTrue(whiteMoves.contains("g2"));
-		assertTrue(whiteMoves.contains("g3"));
-		assertTrue(whiteMoves.contains("g4"));
-		assertTrue(whiteMoves.contains("g5"));
-		assertTrue(whiteMoves.contains("g6"));
-		assertTrue(whiteMoves.contains("g7"));
-		assertTrue(whiteMoves.contains("g8"));
-		assertTrue(whiteMoves.contains("b1"));
-		assertTrue(whiteMoves.contains("c1"));
-		assertTrue(whiteMoves.contains("d1"));
-		assertTrue(whiteMoves.contains("e1"));
-		assertTrue(whiteMoves.contains("f1"));
+		assertEquals(blackRookMoves.size(), 0);
+		assertEquals(blackRook1Moves.size(), 13);
+		assertTrue(blackRook1Moves.contains("h3"));
+		assertTrue(blackRook1Moves.contains("h4"));
+		assertTrue(blackRook1Moves.contains("h5"));
+		assertTrue(blackRook1Moves.contains("h6"));
+		assertTrue(blackRook1Moves.contains("h7"));
+		assertTrue(blackRook1Moves.contains("h8"));
+		assertTrue(blackRook1Moves.contains("a2"));
+		assertTrue(blackRook1Moves.contains("b2"));
+		assertTrue(blackRook1Moves.contains("c2"));
+		assertTrue(blackRook1Moves.contains("d2"));
+		assertTrue(blackRook1Moves.contains("e2"));
+		assertTrue(blackRook1Moves.contains("f2"));
+		assertTrue(blackRook1Moves.contains("g2"));
+		
+		assertEquals(blackRook2Moves.size(), 12);
+		assertTrue(blackRook2Moves.contains("g2"));
+		assertTrue(blackRook2Moves.contains("g3"));
+		assertTrue(blackRook2Moves.contains("g4"));
+		assertTrue(blackRook2Moves.contains("g5"));
+		assertTrue(blackRook2Moves.contains("g6"));
+		assertTrue(blackRook2Moves.contains("g7"));
+		assertTrue(blackRook2Moves.contains("g8"));
+		assertTrue(blackRook2Moves.contains("b1"));
+		assertTrue(blackRook2Moves.contains("c1"));
+		assertTrue(blackRook2Moves.contains("d1"));
+		assertTrue(blackRook2Moves.contains("e1"));
 	}
 }

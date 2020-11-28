@@ -1,5 +1,7 @@
 package chess;
 
+import chess.ChessPiece.Color;
+
 public class ChessBoard {
 	private ChessPiece[][] board;
 	
@@ -8,19 +10,80 @@ public class ChessBoard {
 	}
 	
 	public void initialize() {
+		placePiece(new Rook(this, Color.WHITE), "a1");
+		placePiece(new Knight(this, Color.WHITE), "b1");
+		placePiece(new Bishop(this, Color.WHITE), "c1");
+		placePiece(new Queen(this, Color.WHITE), "d1");
+		placePiece(new King(this, Color.WHITE), "e1");
+		placePiece(new Bishop(this, Color.WHITE), "f1");
+		placePiece(new Knight(this, Color.WHITE), "g1");
+		placePiece(new Rook(this, Color.WHITE), "h1");
+		
+		for(int x = 97; x <= 104; x++) {
+			placePiece(new Pawn(this, Color.WHITE), (char)x + "2");
+		}
+		
+		placePiece(new Rook(this, Color.BLACK), "a8");
+		placePiece(new Knight(this, Color.BLACK), "b8");
+		placePiece(new Bishop(this, Color.BLACK), "c8");
+		placePiece(new Queen(this, Color.BLACK), "d8");
+		placePiece(new King(this, Color.BLACK), "e8");
+		placePiece(new Bishop(this, Color.BLACK), "f8");
+		placePiece(new Knight(this, Color.BLACK), "g8");
+		placePiece(new Rook(this, Color.BLACK), "h8");
+		
+		for(int x = 97; x <= 104; x++) {
+			placePiece(new Pawn(this, Color.BLACK), (char)x + "7");
+		}
 		
 	}
 	
 	public ChessPiece getPiece(String position) throws IllegalPositionException {
-		throw new UnsupportedOperationException();
+		var p = position.toCharArray();
+		if(p.length == 2 && p[0] >= 97 && p[0] <= 104 && p[1] >= 49 && p[1] <= 56) {
+			return board[p[1] - 49][p[0] - 97];
+		}
+		
+		throw new IllegalPositionException();
 	}
 	
-	public boolean placePiece(ChessPiece piece, String Position) {
-		throw new UnsupportedOperationException();
+	public boolean placePiece(ChessPiece piece, String position) {
+		try {
+			var pieceAtPosition = getPiece(position);
+			if(pieceAtPosition == null || pieceAtPosition.color != piece.getColor()) {
+				piece.setPosition(position);
+				
+				var newPosition = position.toCharArray();
+				board[newPosition[1] - 49][newPosition[0] - 97] = piece;
+				return true;
+			}
+			
+			return false;
+		}
+		catch (IllegalPositionException e) {
+			return false;
+		}
 	}
 	
 	public void move(String fromPosition, String toPosition) throws IllegalMoveException {
-		throw new UnsupportedOperationException();
+		try {
+			var piece = getPiece(fromPosition);
+			var legalMoves = piece.legalMoves();
+			if(legalMoves.contains(toPosition)) {
+				var success = placePiece(piece, toPosition);
+				
+				if(success) {
+					var oldPosition = fromPosition.toCharArray();
+					board[oldPosition[1] - 49][oldPosition[0] - 97] = null;
+				}
+			}
+			else {
+				throw new IllegalMoveException();
+			}
+		} 
+		catch (IllegalPositionException e) {
+			e.printStackTrace();
+		}
 	}
 	
 

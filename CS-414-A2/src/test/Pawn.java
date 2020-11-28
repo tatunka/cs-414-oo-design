@@ -20,8 +20,8 @@ class Pawn {
 		blackPiece = new chess.Pawn(board, Color.BLACK);
 		whitePiece = new chess.Pawn(board, Color.WHITE);
 		
-		blackPiece.setPosition("a1");
-		whitePiece.setPosition("a2");
+		board.placePiece(blackPiece, "a3");
+		board.placePiece(whitePiece,  "b2");
 	}
 
 	@Test
@@ -32,8 +32,6 @@ class Pawn {
 	
 	@Test
 	void setPosition() throws IllegalPositionException {
-		var blackBishop = new chess.Bishop(board, Color.BLACK);
-		blackBishop.setPosition("b1");
 		try {
 			blackPiece.setPosition("11");
 			fail("Did not catch illegal position");
@@ -45,19 +43,24 @@ class Pawn {
 		}
 		catch(IllegalPositionException e) {}
 		try {
-			blackPiece.setPosition("b1");
+			blackPiece.setPosition("xx");
 			fail("Did not catch illegal position");
 		}
 		catch(IllegalPositionException e) {}
+		try {
+			blackPiece.setPosition("a9");
+		}
+		catch(IllegalPositionException e) {}
 		
-		assertEquals(blackPiece.getPosition(), "a1");
-		assertEquals(whitePiece.getPosition(), "a2");
+		blackPiece.setPosition("g1");
+		assertEquals(blackPiece.getPosition(), "g1");
+		assertEquals(whitePiece.getPosition(), "b2");
 	}
 	
 	@Test
 	void getPosition() {
-		assertEquals(blackPiece.getPosition(), "a1");
-		assertEquals(whitePiece.getPosition(), "a2");
+		assertEquals(blackPiece.getPosition(), "a3");
+		assertEquals(whitePiece.getPosition(), "b2");
 	}
 	
 	@Test
@@ -67,10 +70,7 @@ class Pawn {
 	}
 	
 	@Test
-	void legalMoves() throws IllegalPositionException {
-		
-		blackPiece.setPosition("a3");
-		whitePiece.setPosition("b2");	
+	void legalMoves() throws IllegalPositionException {	
 		var blackMoves = blackPiece.legalMoves();
 		var whiteMoves = whitePiece.legalMoves();
 		
@@ -78,19 +78,22 @@ class Pawn {
 		assertTrue(blackMoves.contains("a2"));
 		assertTrue(blackMoves.contains("b2"));
 		
-		assertEquals(whiteMoves.size(), 2);
-		assertTrue(whiteMoves.contains("b2"));
+		assertEquals(whiteMoves.size(), 3);
+		assertTrue(whiteMoves.contains("a3"));
 		assertTrue(whiteMoves.contains("b3"));
+		assertTrue(whiteMoves.contains("b4"));
 		
 		var blackPawn = new chess.Pawn(board, Color.BLACK);
 		var blackPawn1 = new chess.Pawn(board, Color.BLACK);
-		var blackPawn2 = new chess.Pawn(board, Color.BLACK);
-		blackPawn.setPosition("h1");
-		blackPawn1.setPosition("h2");
-		blackPawn2.setPosition("h8");
-		
+		board.placePiece(blackPawn, "h1");
+		board.placePiece(blackPawn1, "h2");
 		assertEquals(blackPawn.legalMoves().size(), 0);
 		assertEquals(blackPawn1.legalMoves().size(), 0);
-		assertEquals(blackPawn2.legalMoves().size(), 0);
+		
+		var blackPawn2 = new chess.Pawn(board, Color.BLACK);
+		board.placePiece(blackPawn2, "h8");
+		var blackPawn2Moves = blackPawn2.legalMoves();
+		assertEquals(blackPawn2Moves.size(), 1);
+		assertTrue(blackPawn2Moves.contains("h7"));
 	}
 }

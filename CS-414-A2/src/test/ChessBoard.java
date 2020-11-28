@@ -6,13 +6,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import chess.ChessPiece;
+import chess.ChessPiece.Color;
 import chess.IllegalMoveException;
 import chess.IllegalPositionException;
 
 class ChessBoard {
 	
 	private static chess.ChessBoard board = new chess.ChessBoard();
-	private static char[] cols = new char[] {'a','b','c','d','e','f','g','h'};
 
 	@BeforeEach
 	void setUp() throws Exception {
@@ -23,33 +23,40 @@ class ChessBoard {
 	@Test
 	void initialize() throws ClassNotFoundException, IllegalPositionException {
 		var pieces = new Class[] {
-				Class.forName("class.Rook"), 
-				Class.forName("classs.Knight"),
-				Class.forName("class.Bishop"),
-				Class.forName("class.King"),
-				Class.forName("class.Queen"),
-				Class.forName("class.Bishop"),
-				Class.forName("classs.Knight"),
-				Class.forName("class.Rook"), 
+				Class.forName("chess.Rook"), 
+				Class.forName("chess.Knight"),
+				Class.forName("chess.Bishop"),
+				Class.forName("chess.Queen"),
+				Class.forName("chess.King"),
+				Class.forName("chess.Bishop"),
+				Class.forName("chess.Knight"),
+				Class.forName("chess.Rook"), 
 		};
 		
-		for(var x = 0; x < 8; x++) {
-			var whitePiece = board.getPiece(String.valueOf(cols[x]) + "1");
+		for(var col = 0; col < 8; col++) {
+			var whitePiece = board.getPiece(String.valueOf((char)(col + 97)) + "1");
 			assertEquals(whitePiece.getColor(), ChessPiece.Color.WHITE);
-			assertEquals(pieces[x], whitePiece.getClass());
+			assertEquals(pieces[col], whitePiece.getClass());
 			
-			var whitePawn = board.getPiece(String.valueOf(cols[x]) + "2");
+			var whitePawn = board.getPiece(String.valueOf((char)(col + 97)) + "2");
 			assertEquals(whitePiece.getColor(), ChessPiece.Color.WHITE);
-			assertEquals(Class.forName("class.Pawn"), whitePawn.getClass());
+			assertEquals(Class.forName("chess.Pawn"), whitePawn.getClass());
 			
-			var blackPiece = board.getPiece(String.valueOf(cols[x]) + "8");
+			var blackPiece = board.getPiece(String.valueOf((char)(col + 97)) + "8");
 			assertEquals(blackPiece.getColor(), ChessPiece.Color.BLACK);
-			assertEquals(pieces[x], blackPiece.getClass());
+			assertEquals(pieces[col], blackPiece.getClass());
 			
-			var blackPawn = board.getPiece(String.valueOf(cols[x]) + "7");
+			var blackPawn = board.getPiece(String.valueOf((char)(col + 97)) + "7");
 			assertEquals(blackPawn.getColor(), ChessPiece.Color.BLACK);
-			assertEquals(Class.forName("class.Pawn"), blackPawn.getClass());
-		}		
+			assertEquals(Class.forName("chess.Pawn"), blackPawn.getClass());
+			
+			for(var row = 2; row < 6; row++) {
+				var c = String.valueOf((char)(col + 97));
+				var r = String.valueOf((char)(row + 49));
+				var nullPiece = board.getPiece(c + r);
+				assertNull(nullPiece);
+			}
+		}	
 	}
 
 	@Test
@@ -119,27 +126,59 @@ class ChessBoard {
 	
 	@Test
 	void move() throws IllegalPositionException, IllegalMoveException, ClassNotFoundException {
-		board.move("a2", "a3");
-		var wPawn1 = board.getPiece("a3");
-		var nullPiece = board.getPiece("a2");
-		assertEquals(wPawn1.getColor(), chess.ChessPiece.Color.WHITE);
-		assertEquals(wPawn1.getClass(), Class.forName("chess.Pawn"));
-		assertNull(nullPiece);
+		//move white pawn
+		board.move("a2", "a4");
+		//move black pawn
+		board.move("b7", "b5");
+		//capture white pawn with black pawn
+		board.move("b5", "a4");
+		//move black bishop
+		board.move("c8", "a6");
+		//capture black pawn with white rook
+		board.move("a1","a4");
+		//move white pawn
+		board.move("d2", "d3");
+		//move king
+		board.move("e1", "d2");
+		board.move("d2", "e3");
+		
+		var rook = board.getPiece("a4");
+		assertEquals(rook.getClass(), Class.forName("chess.Rook"));
+		assertEquals(rook.getColor(), Color.WHITE);
+		var bishop = board.getPiece("a6");
+		assertEquals(bishop.getClass(), Class.forName("chess.Bishop"));
+		assertEquals(bishop.getColor(), Color.BLACK);
+		var pawn = board.getPiece("d3");
+		assertEquals(pawn.getClass(), Class.forName("chess.Pawn"));
+		assertEquals(pawn.getColor(), Color.WHITE);
+		var king = board.getPiece("e3");
+		assertEquals(king.getClass(), Class.forName("chess.King"));
+		assertEquals(king.getColor(), Color.WHITE);
 		
 		try {
-			board.move("a3", "a2");
-			fail("Did not catch illegal move.");
+			board.move("d3", "e3");
+			fail("Did not catch illegal move");
 		}
-		catch(IllegalMoveException e) {
-			try {
-				board.move("b1", "d2");
-				fail("Did not catch illegal move.");
-			}
-			catch(IllegalMoveException e1) {
-				var wKnight1 = board.getPiece("b1");
-				assertEquals(wKnight1.getColor(), chess.ChessPiece.Color.WHITE);
-				assertEquals(wKnight1.getClass(), Class.forName("chess.Knight"));
-			}
+		catch(IllegalMoveException e) {}
+		try {
+			board.move("h2", "g3");
+			fail("Pawns can only move diagonal to capture");
 		}
+		catch(IllegalMoveException e) {}
+		try {
+			board.move("b1", "c3");
+			fail("Did not catch illegal move");
+		}
+		catch(IllegalMoveException e) {}
+		try {
+			board.move("b1", "c3");
+			fail("Knights cannot move");
+		}
+		catch(IllegalMoveException e) {}
+		try {
+			board.move("d1", "d2");
+			fail("Queens cannot move");
+		}
+		catch(IllegalMoveException e) {}
 	}
 }

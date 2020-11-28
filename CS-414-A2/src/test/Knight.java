@@ -20,8 +20,8 @@ class Knight {
 		blackPiece = new chess.Knight(board, Color.BLACK);
 		whitePiece = new chess.Knight(board, Color.WHITE);
 		
-		blackPiece.setPosition("a1");
-		whitePiece.setPosition("a2");
+		board.placePiece(blackPiece, "a1");
+		board.placePiece(whitePiece, "a2");
 	}
 
 	@Test
@@ -32,8 +32,6 @@ class Knight {
 	
 	@Test
 	void setPosition() throws IllegalPositionException {
-		var blackBishop = new chess.Bishop(board, Color.BLACK);
-		blackBishop.setPosition("b1");
 		try {
 			blackPiece.setPosition("11");
 			fail("Did not catch illegal position");
@@ -45,12 +43,17 @@ class Knight {
 		}
 		catch(IllegalPositionException e) {}
 		try {
-			blackPiece.setPosition("b1");
+			blackPiece.setPosition("xx");
 			fail("Did not catch illegal position");
 		}
 		catch(IllegalPositionException e) {}
+		try {
+			blackPiece.setPosition("a9");
+		}
+		catch(IllegalPositionException e) {}
 		
-		assertEquals(blackPiece.getPosition(), "a1");
+		blackPiece.setPosition("g1");
+		assertEquals(blackPiece.getPosition(), "g1");
 		assertEquals(whitePiece.getPosition(), "a2");
 	}
 	

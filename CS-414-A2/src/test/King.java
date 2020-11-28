@@ -19,8 +19,8 @@ class King {
 		blackPiece = new chess.King(board, Color.BLACK);
 		whitePiece = new chess.King(board, Color.WHITE);
 		
-		blackPiece.setPosition("a1");
-		whitePiece.setPosition("a2");
+		board.placePiece(blackPiece, "a1");
+		board.placePiece(whitePiece, "b2");
 	}
 
 	@Test
@@ -31,8 +31,6 @@ class King {
 	
 	@Test
 	void setPosition() throws IllegalPositionException {
-		var blackBishop = new chess.Bishop(board, Color.BLACK);
-		blackBishop.setPosition("b1");
 		try {
 			blackPiece.setPosition("11");
 			fail("Did not catch illegal position");
@@ -44,19 +42,24 @@ class King {
 		}
 		catch(IllegalPositionException e) {}
 		try {
-			blackPiece.setPosition("b1");
+			blackPiece.setPosition("xx");
 			fail("Did not catch illegal position");
 		}
 		catch(IllegalPositionException e) {}
+		try {
+			blackPiece.setPosition("a9");
+		}
+		catch(IllegalPositionException e) {}
 		
-		assertEquals(blackPiece.getPosition(), "a1");
-		assertEquals(whitePiece.getPosition(), "a2");
+		blackPiece.setPosition("g1");
+		assertEquals(blackPiece.getPosition(), "g1");
+		assertEquals(whitePiece.getPosition(), "b2");
 	}
 	
 	@Test
 	void getPosition() {
 		assertEquals(blackPiece.getPosition(), "a1");
-		assertEquals(whitePiece.getPosition(), "a2");
+		assertEquals(whitePiece.getPosition(), "b2");
 	}
 	
 	@Test
@@ -68,8 +71,6 @@ class King {
 	@Test
 	void legalMoves() throws IllegalPositionException {
 				
-		blackPiece.setPosition("a1");
-		whitePiece.setPosition("b2");
 		var blackMoves = blackPiece.legalMoves();
 		var whiteMoves = whitePiece.legalMoves();
 		
@@ -78,7 +79,7 @@ class King {
 		assertTrue(blackMoves.contains("b2"));
 		assertTrue(blackMoves.contains("b1"));
 		
-		assertEquals(whiteMoves.size(), 9);
+		assertEquals(whiteMoves.size(), 8);
 		assertTrue(whiteMoves.contains("a1"));
 		assertTrue(whiteMoves.contains("a2"));
 		assertTrue(whiteMoves.contains("a3"));
@@ -92,10 +93,10 @@ class King {
 		var blackPawn1 = new chess.Pawn(board, Color.BLACK);
 		var blackPawn2 = new chess.Pawn(board, Color.BLACK);
 		var blackKing = new chess.King(board, Color.BLACK);
-		blackPawn.setPosition("g2");
-		blackPawn1.setPosition("g1");
-		blackPawn2.setPosition("h2");
-		blackKing.setPosition("h1");
+		board.placePiece(blackPawn, "g2");
+		board.placePiece(blackPawn1, "g1");
+		board.placePiece(blackPawn2, "h2");
+		board.placePiece(blackKing, "h1");
 		
 		var kingMoves = blackKing.legalMoves();
 		assertEquals(kingMoves.size(), 0);

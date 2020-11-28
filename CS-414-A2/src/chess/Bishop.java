@@ -25,37 +25,18 @@ public class Bishop extends ChessPiece {
 		boolean checkTopRight = true, checkBottomRight = true, checkBottomLeft = true, checkTopLeft = true;
 		
 		for(var x = 1; x < 8; x++) {
-			var topRight = getPositionString(column + x, row + x);
-			var bottomRight = getPositionString(column - x, row + x);
-			var bottomLeft = getPositionString(column - x, row - x);
-			var topLeft = getPositionString(column + x, row - x);
 			
-			if(checkTopRight && isLegalMove(topRight)) {
-				legalMoves.add(topRight);
+			if(checkTopRight) {
+				checkTopRight = tryAddMove(column + x, row + x, legalMoves);
 			}
-			else {
-				checkTopRight = false;
+			if(checkBottomRight) {
+				checkBottomRight = tryAddMove(column - x, row + x, legalMoves);
 			}
-			
-			if(checkBottomRight && isLegalMove(bottomRight)) {
-				legalMoves.add(bottomRight);
+			if(checkBottomLeft) {
+				checkBottomLeft = tryAddMove(column - x, row - x, legalMoves);
 			}
-			else {
-				checkBottomRight = false;
-			}
-			
-			if(checkBottomLeft && isLegalMove(bottomLeft)) {
-				legalMoves.add(bottomLeft);
-			}
-			else {
-				checkBottomLeft = false;
-			}
-			
-			if(checkTopLeft && isLegalMove(topLeft)) {
-				legalMoves.add(topLeft);
-			}
-			else {
-				checkTopLeft = false;
+			if(checkTopLeft) {
+				checkTopLeft = tryAddMove(column + x, row - x, legalMoves);
 			}
 		}
 		

@@ -2,13 +2,11 @@ package test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import chess.ChessPiece.Color;
+import chess.IllegalMoveException;
 import chess.IllegalPositionException;
 
 class Bishop {
@@ -16,26 +14,14 @@ class Bishop {
 	private static chess.Bishop blackPiece;
 	private static chess.Bishop whitePiece;
 
-	@BeforeAll
-	static void setUpBeforeClass() throws Exception {
-	}
-
-	@AfterAll
-	static void tearDownAfterClass() throws Exception {
-	}
-
 	@BeforeEach
 	void setUp() throws Exception {
 		board = new chess.ChessBoard();
 		blackPiece = new chess.Bishop(board, Color.BLACK);
 		whitePiece = new chess.Bishop(board, Color.WHITE);
 		
-		blackPiece.setPosition("a1");
-		whitePiece.setPosition("a2");
-	}
-
-	@AfterEach
-	void tearDown() throws Exception {
+		board.placePiece(blackPiece, "a1");
+		board.placePiece(whitePiece, "a2");
 	}
 
 	@Test
@@ -46,8 +32,6 @@ class Bishop {
 	
 	@Test
 	void setPosition() throws IllegalPositionException {
-		var blackBishop = new chess.Bishop(board, Color.BLACK);
-		blackBishop.setPosition("b1");
 		try {
 			blackPiece.setPosition("11");
 			fail("Did not catch illegal position");
@@ -59,12 +43,17 @@ class Bishop {
 		}
 		catch(IllegalPositionException e) {}
 		try {
-			blackPiece.setPosition("b1");
+			blackPiece.setPosition("xx");
 			fail("Did not catch illegal position");
 		}
 		catch(IllegalPositionException e) {}
+		try {
+			blackPiece.setPosition("a9");
+		}
+		catch(IllegalPositionException e) {}
 		
-		assertEquals(blackPiece.getPosition(), "a1");
+		blackPiece.setPosition("g1");
+		assertEquals(blackPiece.getPosition(), "g1");
 		assertEquals(whitePiece.getPosition(), "a2");
 	}
 	
@@ -81,25 +70,19 @@ class Bishop {
 	}
 	
 	@Test
-	void legalMoves() throws IllegalPositionException {
+	void legalMoves() throws IllegalPositionException, IllegalMoveException {
 		var blackPawn = new chess.Pawn(board, Color.BLACK);
 		var blackBishop = new chess.Bishop(board, Color.BLACK);
-		blackPawn.setPosition("g2");
-		blackBishop.setPosition("h1");
-		
-		blackPiece.setPosition("a1");
-		whitePiece.setPosition("b2");
+		var whiteBishop = new chess.Bishop(board,  Color.WHITE);
+		board.placePiece(blackPawn, "g2");
+		board.placePiece(blackBishop, "h1");
+		board.placePiece(whiteBishop, "b2");
+	
 		var blackMoves = blackPiece.legalMoves();
-		var whiteMoves = whitePiece.legalMoves();
+		var whiteMoves = whiteBishop.legalMoves();
 		
-		assertEquals(blackMoves.size(), 7);
+		assertEquals(blackMoves.size(), 1);
 		assertTrue(blackMoves.contains("b2"));
-		assertTrue(blackMoves.contains("c3"));
-		assertTrue(blackMoves.contains("d4"));
-		assertTrue(blackMoves.contains("e5"));
-		assertTrue(blackMoves.contains("f6"));
-		assertTrue(blackMoves.contains("g7"));
-		assertTrue(blackMoves.contains("h8"));
 		
 		assertEquals(whiteMoves.size(), 9);
 		assertTrue(whiteMoves.contains("a1"));

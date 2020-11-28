@@ -1,6 +1,11 @@
 package chess;
 public class IllegalPositionException extends Exception {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2233476474887008881L;
+
 	public IllegalPositionException() {
 		// TODO Auto-generated constructor stub
 	}

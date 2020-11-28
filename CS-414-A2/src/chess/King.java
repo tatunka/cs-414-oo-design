@@ -20,24 +20,16 @@ public class King extends ChessPiece {
 	}
 
 	@Override
-	public ArrayList<String> legalMoves() {
-		var possibleMoves = new ArrayList<String>();
-		possibleMoves.add(getPositionString(column - 1, row));
-		possibleMoves.add(getPositionString(column + 1, row - 1));
-		possibleMoves.add(getPositionString(column + 1, row));
-		possibleMoves.add(getPositionString(column + 1, row + 1));
-		possibleMoves.add(getPositionString(column, row + 1));
-		possibleMoves.add(getPositionString(column + 1, row - 1));
-		possibleMoves.add(getPositionString(column, row - 1));
-		possibleMoves.add(getPositionString(column - 1, row - 1));
-		
+	public ArrayList<String> legalMoves() {		
 		var legalMoves = new ArrayList<String>();
-		
-		for(var move : possibleMoves){
-			if(isLegalMove(move)) {
-				legalMoves.add(move);
-			}
-		}
+		tryAddMove(column - 1, row - 1, legalMoves);
+		tryAddMove(column - 1, row, legalMoves);
+		tryAddMove(column - 1, row + 1, legalMoves);
+		tryAddMove(column, row + 1, legalMoves);
+		tryAddMove(column + 1, row + 1, legalMoves);
+		tryAddMove(column + 1, row, legalMoves);
+		tryAddMove(column + 1, row - 1, legalMoves);
+		tryAddMove(column, row - 1, legalMoves);
 		
 		return legalMoves;
 	}

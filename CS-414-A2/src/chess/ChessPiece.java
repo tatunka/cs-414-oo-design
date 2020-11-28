@@ -1,6 +1,5 @@
 package chess;
 import java.util.ArrayList;
-import java.util.Collections;
 
 public abstract class ChessPiece {
 	public enum Color {WHITE, BLACK}
@@ -8,13 +7,10 @@ public abstract class ChessPiece {
 	protected int row;
 	protected int column;
 	protected Color color;
-	protected ArrayList<Character> colLetters;
 	
 	public ChessPiece(ChessBoard board, Color color) {
 		this.board = board;
 		this.color = color;
-		this.colLetters = new ArrayList<>();
-		Collections.addAll(this.colLetters, 'a','b','c','d','e','f','g','h');
 	}
 	
 	public abstract String toString();
@@ -32,9 +28,9 @@ public abstract class ChessPiece {
 		var posArray = position.toCharArray();
 		if(position.length() == 2 && 
 				posArray[0] >= 'a' && posArray[0] <= 'h' &&
-				posArray[1] >= '0' && posArray[1] <= '7') {
-			this.column = colLetters.indexOf(posArray[0]);
-			this.row = Integer.valueOf(posArray[1]) - 1;
+				posArray[1] >= '1' && posArray[1] <= '8') {
+			this.column = posArray[0] - 97;
+			this.row = posArray[1] - 49;
 		}
 		else {
 			throw new IllegalPositionException();
@@ -43,34 +39,27 @@ public abstract class ChessPiece {
 	
 	protected String getPositionString(int col, int row) {
 		if (col >= 0 && col <= 7 && row >= 0 && row <= 7) {
-			return String.valueOf(colLetters.get(row)) + String.valueOf(row + 1);
+			var c = String.valueOf((char) (col + 97));
+			var r = String.valueOf((char) (row + 49)); 
+			return c + r;
 		}
 		
 		return "";
 	}
 	
-	protected Boolean isLegalMove(String move) {
+	protected boolean tryAddMove(int col, int row, ArrayList<String> legalMoves) {		
 		try {
-			if(!move.isEmpty()) {
-				var piece = board.getPiece(move);
-				return piece.getColor() == this.color ? true : false;
+			var position = getPositionString(col, row);
+			var piece = board.getPiece(position);
+			
+			if(piece == null || piece.getColor() != this.color) {
+				legalMoves.add(position);
 			}
 			
-			return false;
+			return piece == null;
 		} 
 		catch (IllegalPositionException e) {
-			e.printStackTrace();
 			return false;
-		}
-	}
-	
-	protected Color getColorByPosition(String position) {
-		try {
-			var piece = board.getPiece(position);
-			return piece.getColor();
-		}
-		catch(IllegalPositionException e) {
-			return null;
 		}
 	}
 }
